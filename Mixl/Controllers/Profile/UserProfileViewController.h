@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SWRevealViewController.h"
 
-@interface UserProfileViewController : UIViewController<UITextFieldDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, SWRevealViewControllerDelegate, UIGestureRecognizerDelegate,UINavigationControllerDelegate>
+@interface UserProfileViewController : BaseViewController<UITextFieldDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (strong, nonatomic) IBOutlet UIImageView *imgUser;
 @property (strong, nonatomic) IBOutlet UIView *viewComponent;
@@ -26,10 +25,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *btnDone;
 @property (strong, nonatomic) IBOutlet UIButton *btnMale;
 @property (strong, nonatomic) IBOutlet UIButton *btnFemale;
-
-@property (strong, nonatomic) IBOutlet UIView    *tapRecognizerView;
-@property (strong, nonatomic) IBOutlet UIButton  *sideBarButton;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
 
 @end

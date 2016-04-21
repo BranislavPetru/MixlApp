@@ -26,11 +26,6 @@
 
 - (void) initView {
     
-    self.revealViewController.delegate = self;
-    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.revealViewController action:@selector(revealToggle:)];
-    [self.tapRecognizerView addGestureRecognizer:self.tapGestureRecognizer];
-    self.tapGestureRecognizer.enabled = NO;
-    self.tapRecognizerView.hidden = YES;
 
     _viewComponent.layer.borderWidth = 2.0f;
     _viewComponent.layer.borderColor = [UIColor lightGrayColor].CGColor;
@@ -90,14 +85,13 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)onbtnMenuClicked:(id)sender {
-    [self.revealViewController revealToggleAnimated:YES];
-}
 
 - (IBAction)monthClicked:(id)sender {
     
     if (_tableViewMonth.hidden == YES) {
         _tableViewMonth.hidden = NO;
+        _tableviewDay.hidden = YES;
+        _tableviewYear.hidden = YES;
     }else {
         _tableViewMonth.hidden = YES;
     }
@@ -106,6 +100,8 @@
 - (IBAction)dayClicked:(id)sender {
     if (_tableviewDay.hidden == YES) {
         _tableviewDay.hidden = NO;
+        _tableviewYear.hidden = YES;
+        _tableViewMonth.hidden = YES;
     }else {
         _tableviewDay.hidden = YES;
     }
@@ -114,6 +110,8 @@
 - (IBAction)yearClicked:(id)sender {
     if (_tableviewYear.hidden == YES) {
         _tableviewYear.hidden = NO;
+        _tableViewMonth.hidden = YES;
+        _tableviewDay.hidden = YES;
     }else {
         _tableviewYear.hidden = YES;
     }
@@ -130,8 +128,6 @@
 }
 
 
-
-
 - (IBAction)onSWTerms:(id)sender {
     //[UserInformation sharedInstance].receiveMessage = self.swTerms.on;
 }
@@ -141,7 +137,9 @@
 }
 
 - (IBAction)doneClicked:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    // sign up
+    
+    [self navToMainView];
 }
 
 #pragma UITableViewDelegate Method
@@ -204,17 +202,5 @@
     return YES;
 }
 
-#pragma mark - SWRevealViewController Delegate Methods
-- (void)revealController:(SWRevealViewController *)revealController willMoveToPosition:(FrontViewPosition)position
-{
-    if (position == FrontViewPositionRight) {         // Menu will get revealed
-        self.tapGestureRecognizer.enabled = YES;      // Enable the tap gesture Recognizer
-        self.tapRecognizerView.hidden = NO;
-    }
-    else if (position == FrontViewPositionLeft){      // Menu will close
-        self.tapGestureRecognizer.enabled = NO;       // Enable the tap gesture Recognizer
-        self.tapRecognizerView.hidden = YES;
-    }
-}
 
 @end

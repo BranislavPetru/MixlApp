@@ -8,9 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "NMRangeSlider.h"
-#import "SWRevealViewController.h"
 
-@interface ManageSettingViewController : UIViewController <SWRevealViewControllerDelegate, UIGestureRecognizerDelegate,UINavigationControllerDelegate>
+@interface ManageSettingViewController : BaseViewController <UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet NMRangeSlider *standardSlider;
 @property (nonatomic, strong) IBOutlet UILabel*                 lblRadius;
@@ -22,9 +21,5 @@
 @property (nonatomic, strong) IBOutlet UIButton*                btnContactFriendsCheckbox;
 @property (nonatomic, strong) IBOutlet UISwitch*                swFriendRequest;
 @property (nonatomic, strong) IBOutlet UISwitch*                swInvitesUsers;
-
-@property (strong, nonatomic) IBOutlet UIView    *tapRecognizerView;
-@property (strong, nonatomic) IBOutlet UIButton  *sideBarButton;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
 @end

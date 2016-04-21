@@ -23,12 +23,6 @@
 
 - (void) initView {
     
-    self.revealViewController.delegate = self;
-    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.revealViewController action:@selector(revealToggle:)];
-    [self.tapRecognizerView addGestureRecognizer:self.tapGestureRecognizer];
-    self.tapGestureRecognizer.enabled = NO;
-    self.tapRecognizerView.hidden = YES;
-    
      [self configureStandardSlider];
     _segGander.selectedSegmentIndex = 0;
     [_btnSeeAllCheckbox setImage:[UIImage imageNamed:@"icon_uncheckbox"] forState:UIControlStateNormal];
@@ -52,10 +46,6 @@
 {
     [super viewWillAppear:animated];
 
-}
-
-- (IBAction)onbtnMenuClicked:(id)sender {
-    [self.revealViewController revealToggleAnimated:YES];
 }
 
 #pragma mark -
@@ -121,6 +111,13 @@
 
 - (IBAction)onDoneClick:(id)sender
 {
+    // Settings Update
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UserSearchViewController* userSearchViewController =
+    (UserSearchViewController*) [storyboard instantiateViewControllerWithIdentifier:@"UserSearchVC"];
+    userSearchViewController.tapType = SIDEBAR_PEOPLENEARBY_ITEM;
+    [self.navigationController pushViewController:userSearchViewController animated:YES];
     
 }
 
@@ -128,20 +125,5 @@
 {
    
 }
-
-#pragma mark - SWRevealViewController Delegate Methods
-- (void)revealController:(SWRevealViewController *)revealController willMoveToPosition:(FrontViewPosition)position
-{
-    if (position == FrontViewPositionRight) {         // Menu will get revealed
-        self.tapGestureRecognizer.enabled = YES;      // Enable the tap gesture Recognizer
-        self.tapRecognizerView.hidden = NO;
-    }
-    else if (position == FrontViewPositionLeft){      // Menu will close
-        self.tapGestureRecognizer.enabled = NO;       // Enable the tap gesture Recognizer
-        self.tapRecognizerView.hidden = YES;
-    }
-}
-
-
 
 @end

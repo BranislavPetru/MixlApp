@@ -23,17 +23,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.revealViewController.delegate = self;
     [self initView];
 }
 
 - (void) initView {
-    
-    
-    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.revealViewController action:@selector(revealToggle:)];
-    [self.tapRecognizerView addGestureRecognizer:self.tapGestureRecognizer];
-    self.tapGestureRecognizer.enabled = YES;
-    self.tapRecognizerView.hidden = YES;
     
     _imgUser.layer.borderWidth = 2.0f;
     _imgUser.layer.borderColor = [UIColor lightGrayColor].CGColor;
@@ -86,8 +79,6 @@
     txtPassflag = NO;
     txtAboutflag = NO;
     
-    self.revealViewController.delegate = self;
-    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.revealViewController action:@selector(revealToggle:)];
 }
 
 
@@ -96,14 +87,13 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)onbtnMenuClicked:(id)sender {
-    [self.revealViewController revealToggleAnimated:YES];
-}
 
 - (IBAction)monthClicked:(id)sender {
     
     if (_tableViewMonth.hidden == YES) {
         _tableViewMonth.hidden = NO;
+        _tableviewDay.hidden = YES;
+        _tableviewYear.hidden = YES;
     }else {
         _tableViewMonth.hidden = YES;
     }
@@ -112,6 +102,8 @@
 - (IBAction)dayClicked:(id)sender {
     if (_tableviewDay.hidden == YES) {
         _tableviewDay.hidden = NO;
+        _tableViewMonth.hidden = YES;
+        _tableviewYear.hidden = YES;
     }else {
         _tableviewDay.hidden = YES;
     }
@@ -120,6 +112,8 @@
 - (IBAction)yearClicked:(id)sender {
     if (_tableviewYear.hidden == YES) {
         _tableviewYear.hidden = NO;
+        _tableViewMonth.hidden = YES;
+        _tableviewDay.hidden = YES;
     }else {
         _tableviewYear.hidden = YES;
     }
@@ -172,7 +166,13 @@
 
 
 - (IBAction)doneClicked:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    // profile update
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UserSearchViewController* userSearchViewController =
+    (UserSearchViewController*) [storyboard instantiateViewControllerWithIdentifier:@"UserSearchVC"];
+    userSearchViewController.tapType = SIDEBAR_PEOPLENEARBY_ITEM;
+    [self.navigationController pushViewController:userSearchViewController animated:YES];
 }
 
 #pragma UITableViewDelegate Method
@@ -332,17 +332,5 @@
     
 }
 
-#pragma mark - SWRevealViewController Delegate Methods
-- (void)revealController:(SWRevealViewController *)revealController willMoveToPosition:(FrontViewPosition)position
-{
-    if (position == FrontViewPositionRight) {         // Menu will get revealed
-//        self.tapGestureRecognizer.enabled = YES;      // Enable the tap gesture Recognizer
-        self.tapRecognizerView.hidden = NO;
-    }
-    else if (position == FrontViewPositionLeft){      // Menu will close
-//        self.tapGestureRecognizer.enabled = NO;       // Enable the tap gesture Recognizer
-        self.tapRecognizerView.hidden = YES;
-    }
-}
 
 @end

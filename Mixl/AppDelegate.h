@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UserMenuSideViewController.h"
+#import <CoreLocation/CoreLocation.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, retain) CLLocationManager *locationManager;
 
-@property(nonatomic,strong) UserMenuSideViewController *sideMenu;
-
+- (void)updateLocationManager;
 @end
 

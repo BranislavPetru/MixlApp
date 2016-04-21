@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LoginViewController : UIViewController
+@interface LoginViewController : UserBaseViewController
 
 @property (nonatomic, strong) IBOutlet UIView*      viewFBSignin;
 @property (nonatomic, strong) IBOutlet UIView*      viewF;

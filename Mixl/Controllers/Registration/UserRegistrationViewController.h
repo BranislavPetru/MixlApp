@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SWRevealViewController.h"
 
-@interface UserRegistrationViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, SWRevealViewControllerDelegate,UIGestureRecognizerDelegate>
+@interface UserRegistrationViewController : UserBaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIView *viewComponent;
 @property (strong, nonatomic) IBOutlet UIView *viewTerms;
@@ -31,8 +30,5 @@
 @property (nonatomic, strong) IBOutlet UISwitch*                swTerms;
 @property (nonatomic, strong) IBOutlet UISwitch*                swPolicy;
 
-@property (strong, nonatomic) IBOutlet UIView           *tapRecognizerView;
-@property (strong, nonatomic) IBOutlet UIButton* sideBarButton;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 
 @end
