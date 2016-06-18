@@ -2,7 +2,7 @@
 //  UserSearchViewController.h
 //  Mixl
 //
-//  Created by admin on 4/10/16.
+//  Created by Branislav on 4/10/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 

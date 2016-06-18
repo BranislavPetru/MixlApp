@@ -2,13 +2,14 @@
 //  UserProfileViewController.h
 //  Mixl
 //
-//  Created by admin on 4/6/16.
+//  Created by Branislav on 4/6/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 @interface UserProfileViewController : BaseViewController<UITextFieldDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@property (weak, nonatomic) IBOutlet UIView *viewUserImage;
 
 @property (strong, nonatomic) IBOutlet UIImageView *imgUser;
 @property (strong, nonatomic) IBOutlet UIView *viewComponent;

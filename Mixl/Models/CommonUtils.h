@@ -67,6 +67,7 @@
 - (BOOL)isFormEmpty:(NSMutableArray *)array;
 - (void)setFormDic:(NSMutableArray *)array toDic:(NSMutableDictionary *)formDic;
 - (BOOL)validateEmail:(NSString *)emailStr;
+
 - (NSArray *)getSortedArray:(NSArray *)array;
 
 - (BOOL)isEmptyString:(NSString *)str;
@@ -97,9 +98,13 @@
 - (void)customizeNavigationBar:(UIViewController *)view hideBackButton:(BOOL) option;
 - (void)setIntroPopupView:(NSString *)content onStoryBoard:(UIStoryboard *)storyBoard;
 - (void)setWFUserPhoto:(UIImageView *)imageView byPhotoUrl:(NSString *)photoUrl;
+//To get mile
+- (int) calculateDistance: (double) sourceLat withSourceLong: (double) sourceLon withDestinationLat: (double) destinationLat withDestinationLong: (double) destinationLong;
+- (NSString*) ageCount:(NSString*) birthYear;
 
 //+ (id) httpCommonRequest:(NSString *) urlStr;
 - (id) httpJsonRequest:(NSString *) urlStr withJSON:(NSMutableDictionary *)params;
+- (id) myhttpJsonRequest:(NSString *) urlStr withJSON:(NSMutableDictionary *)params;
 
-
+- (NSDictionary*) removeNilValue:(NSDictionary*) dicValue;
 @end

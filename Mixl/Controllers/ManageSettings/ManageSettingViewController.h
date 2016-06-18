@@ -2,7 +2,7 @@
 //  ManageSettingViewController.h
 //  Mixl
 //
-//  Created by admin on 4/7/16.
+//  Created by Branislav on 4/7/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 
@@ -21,5 +21,6 @@
 @property (nonatomic, strong) IBOutlet UIButton*                btnContactFriendsCheckbox;
 @property (nonatomic, strong) IBOutlet UISwitch*                swFriendRequest;
 @property (nonatomic, strong) IBOutlet UISwitch*                swInvitesUsers;
+@property (weak, nonatomic) IBOutlet UISlider *sliderRadius;
 
 @end

@@ -86,14 +86,49 @@
                  //NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
                  NSMutableDictionary *userFBlogin = [[NSMutableDictionary alloc] init];
                 
-                  [userFBlogin setObject:[temp objectForKey:@"id"] forKey:@"fb_token"];
-                  [userFBlogin setObject:[temp objectForKey:@"email"] forKey:@"email"];
+                 [userFBlogin setObject:[temp objectForKey:@"id"] forKey:@"fb_token"];
+                 [userFBlogin setObject:[temp objectForKey:@"email"] forKey:@"email"];
+              
+                 if([commonUtils checkKeyInDic:@"first_name" inDic:[temp mutableCopy]]) {
+                     [userFBlogin setObject:[temp objectForKey:@"first_name"] forKey:@"firstname"];
+                 }
+                 if([commonUtils checkKeyInDic:@"last_name" inDic:[temp mutableCopy]]) {
+                     [userFBlogin setObject:[temp objectForKey:@"last_name"] forKey:@"lastname"];
+                 }
                  
+                 NSString *gender = @"m";
+                 if([commonUtils checkKeyInDic:@"gender" inDic:[temp mutableCopy]]) {
+                     if([[temp objectForKey:@"gender"] isEqualToString:@"female"]) gender = @"f";
+                 }
+                 [userFBlogin setObject:gender forKey:@"gender"];
+                 
+                 NSString *fbProfilePhoto = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [temp objectForKey:@"id"]];
+                 [userFBlogin setObject:fbProfilePhoto forKey:@"image1"];
+                 
+                 [userFBlogin setObject:@"u" forKey:@"type"];
+                 
+                 NSString *age = @"30";
+                 if([commonUtils checkKeyInDic:@"age" inDic:[temp mutableCopy]]) {
+                     age = [NSString stringWithFormat:@"%@", [temp objectForKey:@"age"]];
+                 }
+                 [userFBlogin setObject:age forKey:@"date_of_birth"];
+                 
+                 if([commonUtils getUserDefault:@"currentLatitude"] && [commonUtils getUserDefault:@"currentLongitude"]) {
+                     [userFBlogin setObject:[commonUtils getUserDefault:@"currentLatitude"] forKey:@"latitude"];
+                     [userFBlogin setObject:[commonUtils getUserDefault:@"currentLongitude"] forKey:@"longitude"];
+                 }
+                 else{
+                     [appController.vAlert doAlert:@"Notice" body:@"There is no your location info.\n Please Confirm location service and Try again!" duration:2.0f done:^(DoAlertView *alertView) {
+                         return;
+                     }];
+                     
+                 }
+
                   if([commonUtils getUserDefault:@"user_apns_id"] != nil) {
                       [userFBlogin setObject:[commonUtils getUserDefault:@"user_apns_id"] forKey:@"io_token"];
 
                       self.isLoadingUserBase = YES;
-                      [commonUtils showActivityIndicatorColored:self.view];
+                      [JSWaiter ShowWaiter:self.view title:@"Signing in..." type:0];
                       //            [NSThread detachNewThreadSelector:@selector(requestData:) toTarget:self withObject:userInfo];
                       [self requestData:userFBlogin];
 
@@ -101,61 +136,11 @@
                       [appController.vAlert doAlert:@"Notice" body:@"Failed to get your device token.\nTherefore, you will not be able to receive notification for the new activities." duration:2.0f done:^(DoAlertView *alertView) {
                           
                           self.isLoadingUserBase = YES;
-                          [commonUtils showActivityIndicatorColored:self.view];
+                          [JSWaiter ShowWaiter:self.view title:@"Signing in..." type:0];
                           // [NSThread detachNewThreadSelector:@selector(requestData:) toTarget:self withObject:userInfo];
                           [self requestData:userFBlogin];
                       }];
                   }
-
-//                 [userInfo setObject:[temp objectForKey:@"id"] forKey:@"user_facebook_id"];
-//                 
-//                 [userInfo setObject:[temp objectForKey:@"email"] forKey:@"user_email"];
-//                 
-//                 if([commonUtils checkKeyInDic:@"first_name" inDic:[temp mutableCopy]]) {
-//                     [userInfo setObject:[temp objectForKey:@"first_name"] forKey:@"user_first_name"];
-//                 }
-//                 if([commonUtils checkKeyInDic:@"last_name" inDic:[temp mutableCopy]]) {
-//                     [userInfo setObject:[temp objectForKey:@"last_name"] forKey:@"user_last_name"];
-//                 }
-//                 
-//                 NSString *gender = @"1";
-//                 if([commonUtils checkKeyInDic:@"gender" inDic:[temp mutableCopy]]) {
-//                     if([[temp objectForKey:@"gender"] isEqualToString:@"female"]) gender = @"2";
-//                 }
-//                 [userInfo setObject:gender forKey:@"user_gender"];
-//                 
-//                 NSString *age = @"30";
-//                 if([commonUtils checkKeyInDic:@"age" inDic:[temp mutableCopy]]) {
-//                     age = [NSString stringWithFormat:@"%@", [temp objectForKey:@"age"]];
-//                 }
-//                 [userInfo setObject:age forKey:@"user_age"];
-//                 
-//                 if([commonUtils getUserDefault:@"currentLatitude"] && [commonUtils getUserDefault:@"currentLongitude"]) {
-//                     [userInfo setObject:[commonUtils getUserDefault:@"currentLatitude"] forKey:@"user_location_latitude"];
-//                     [userInfo setObject:[commonUtils getUserDefault:@"currentLongitude"] forKey:@"user_location_longitude"];
-//                 }
-//                 NSString *fbProfilePhoto = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", [temp objectForKey:@"id"]];
-//                 [userInfo setObject:fbProfilePhoto forKey:@"user_photo_url"];
-//                 
-//                 [userInfo setObject:@"2" forKey:@"signup_mode"];
-//                 
-//                 if([commonUtils getUserDefault:@"user_apns_id"] != nil) {
-//                     [userInfo setObject:[commonUtils getUserDefault:@"user_apns_id"] forKey:@"user_apns_id"];
-//                     
-//                     self.isLoadingUserBase = YES;
-//                     [commonUtils showActivityIndicatorColored:self.view];
-//                     //            [NSThread detachNewThreadSelector:@selector(requestData:) toTarget:self withObject:userInfo];
-//                     [self requestData:userInfo];
-//                     
-//                 } else {
-//                     [appController.vAlert doAlert:@"Notice" body:@"Failed to get your device token.\nTherefore, you will not be able to receive notification for the new activities." duration:2.0f done:^(DoAlertView *alertView) {
-//                         
-//                         self.isLoadingUserBase = YES;
-//                         [commonUtils showActivityIndicatorColored:self.view];
-//                         // [NSThread detachNewThreadSelector:@selector(requestData:) toTarget:self withObject:userInfo];
-//                         [self requestData:userInfo];
-//                     }];
-//                 }
                  
              } else {
                  NSLog(@"Error %@",error);
@@ -174,34 +159,37 @@
     resObj = [commonUtils httpJsonRequest:API_URL_USER_FBLOGIN withJSON:(NSMutableDictionary *) params];
     
     self.isLoadingUserBase = NO;
-    [commonUtils hideActivityIndicator];
+    [JSWaiter HideWaiter];
     
     if (resObj != nil) {
         NSDictionary *result = (NSDictionary*)resObj;
-        NSDecimalNumber *status = [result objectForKey:@"status"];
-        if([status intValue] == 1) {
+        NSString *str = [result objectForKey:@"error"];
+        int flag = [str intValue];
+        if(flag == 0) {
             
-            appController.currentUser = [result objectForKey:@"current_user"];
+            appController.currentUser = [NSMutableDictionary dictionaryWithDictionary:result];
+            [commonUtils setUserDefault:@"authorized_token" withFormat:[[result objectForKey:@"user"] objectForKey:@"token"]];
+            [commonUtils setUserDefault:@"flag_location_query_enabled" withFormat:@"1"];
             [commonUtils setUserDefaultDic:@"current_user" withDic:appController.currentUser];
-          
-            [self requestOver];
+            NSLog(@"current user : %@", appController.currentUser);
+            
+            [commonUtils setUserDefault:@"settingChanged" withFormat:@"1"];
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] updateLocationManager];
+
+            [self navToMainView];
             //[self performSelector:@selector(requestOver) onThread:[NSThread mainThread] withObject:nil waitUntilDone:YES];
             
         } else {
-            NSString *msg = (NSString *)[resObj objectForKey:@"msg"];
-            if([msg isEqualToString:@""]) msg = @"Please complete entire form";
-            [commonUtils showVAlertSimple:@"Warning" body:msg duration:1.4];
+            NSArray *msg = (NSArray *)[resObj objectForKey:@"messages"];
+            NSString *stringMsg = (NSString *)[msg objectAtIndex:0];
+            if([stringMsg isEqualToString:@""] || stringMsg == nil) stringMsg = @"Please complete entire form";
+            [commonUtils showVAlertSimple:@"Warning" body:stringMsg duration:1.4];
+            
         }
     } else {
-        
-//                [[FBSession activeSession] closeAndClearTokenInformation];
-//                [FBSession setActiveSession:nil];
         [commonUtils showVAlertSimple:@"Connection Error" body:@"Please check your internet connection status" duration:1.0];
     }
-}
-
-- (void)requestOver {
-    [self navToMainView];
+    
 }
 
 @end

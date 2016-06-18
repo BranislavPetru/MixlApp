@@ -2,7 +2,7 @@
 //  WFUserBaseViewController.m
 //  Woof
 //
-//  Created by Mac on 1/9/15.
+//  Created by Branislav on 1/9/15.
 //  Copyright (c) 2015 Silver. All rights reserved.
 //
 
@@ -20,7 +20,7 @@
 
     appController.currentUser = [commonUtils getUserDefaultDicByKey:@"current_user"];
     if([[appController.currentUser objectForKey:@"user"] objectForKey:@"id"] != nil) {
-        
+        NSLog(@"----------current info of logged in user: %@", appController.currentUser);
         if([[[appController.currentUser objectForKey:@"user"] objectForKey:@"type"] isEqualToString:@"u"]){
             MySidePanelController *panelController = [self.storyboard instantiateViewControllerWithIdentifier:@"sidePanel"];
             [self.navigationController pushViewController:panelController animated:YES];
@@ -39,7 +39,7 @@
         
         FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
         [login logOut];
-        [self.navigationController popToRootViewControllerAnimated:NO];
+        //[self.navigationController popToRootViewControllerAnimated:NO];
     }
     
     self.isLoadingUserBase = NO;

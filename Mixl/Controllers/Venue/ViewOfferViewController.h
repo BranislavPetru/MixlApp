@@ -2,7 +2,7 @@
 //  ViewOfferViewController.h
 //  Mixl
 //
-//  Created by Jose on 4/20/16.
+//  Created by Branislav on 4/20/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 
@@ -15,4 +15,5 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnCancel;
 
 @property (strong, nonatomic) NSDictionary *offer;
+@property (strong, nonatomic) UIImage *imageFile;
 @end

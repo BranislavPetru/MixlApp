@@ -2,27 +2,33 @@
 //  Config.m
 
 #define SERVER_URL @"http://ec2-52-50-37-37.eu-west-1.compute.amazonaws.com"
-#define API_KEY @"j05wd2ae49d212578ef13cb607cef64b"
+#define API_KEY @" "
 
 #define API_URL (SERVER_URL @"/api")
 #define API_URL_USER_SIGNUP (SERVER_URL @"/api/register")
 #define API_URL_USER_FBLOGIN (SERVER_URL @"/api/fblogin")
 #define API_URL_USER_LOGIN (SERVER_URL @"/api/login")
 
+#define API_URL_SETTINGS            (SERVER_URL @"/api/preference")
+#define API_URL_SETTINGS_DELETE     (SERVER_URL @"/api/deleteaccount")
+#define API_URL_PROFILE_UPDATE      (SERVER_URL @"/api/user")
+#define API_URL_LOCATION_UPDATE     (SERVER_URL @"/api/location")
+#define API_URL_NEARBY              (SERVER_URL @"/api/nearby")
+#define API_URL_FRIEND              (SERVER_URL @"/api/friend")
+#define API_URL_SEARCH              (SERVER_URL @"/api/search")
+#define API_URL_USER                (SERVER_URL @"/api/user")
+#define API_URL_USER_INVITE         (SERVER_URL @"/api/invite")
+#define API_URL_USER_ACCEPT_INVITE  (SERVER_URL @"/api/acceptinvite")
+#define API_URL_CITY                (SERVER_URL @"/api/cities")
+#define API_URL_STATES              (SERVER_URL @"/api/states")
+#define API_URL_GALLERY             (SERVER_URL @"/api/gallery-images")
+#define API_URL_OFFER               (SERVER_URL @"/api/offer")
+#define API_URL_RECEIVEINVITE       (SERVER_URL @"/api/receiveinvite")
+#define API_URL_CLAIM               (SERVER_URL @"/api/claimoffer")
+#define API_URL_SEND_MESSAGE        (SERVER_URL @"/api/messages")
+#define API_URL_CHAT_HISTORY        (SERVER_URL @"/api/chat-history")
+#define API_URL_UPLOAD_PHOTO        (SERVER_URL @"/api/upload-photo")
 
-#define API_URL_USER_RETRIEVE_PASSWORD (SERVER_URL @"/api/user_retrieve_password")
-#define API_URL_USER_LOGOUT (SERVER_URL @"/api/user_logout")
-
-#define API_URL_EXPLORE_BARKS (SERVER_URL @"/api/explore_barks")
-#define API_URL_LIKE_BARKS (SERVER_URL @"/api/like_barks")
-#define API_URL_BARK_STAT (SERVER_URL @"/api/bark_stat")
-#define API_URL_LIKE_USER (SERVER_URL @"/api/like_user")
-#define API_URL_REPORT_USER (SERVER_URL @"/api/report_user")
-#define API_URL_MY_BARKS (SERVER_URL @"/api/my_barks")
-#define API_URL_REMOVE_LIKED_BARKS (SERVER_URL @"/api/remove_liked_barks")
-#define API_URL_FAVORITE_BARKS (SERVER_URL @"/api/favorite_barks")
-#define API_URL_PROFILE_UPDATE (SERVER_URL @"/api/profile_update")
-#define API_URL_DISCOVERY_SETTINGS (SERVER_URL @"/api/discovery_settings")
 #define API_URL_LOCATION_SETTINGS (SERVER_URL @"/api/location_settings")
 #define API_URL_USER_SETTINGS_LOCATION_ID (SERVER_URL @"/api/user_settings_location_id")
 
@@ -89,8 +95,12 @@
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
-#define APP_DidReceiveMessage @"APP_DidReceiveMessage"
-#define APP_UpdateUnreadMessage @"APP_UpdateUnreadMessage"
+#define APP_DidReceivePush @"APP_DidReceivePush"
+#define APP_FriendRequestPush @"APP_FriendRequestPush"
+#define APP_UserInviteAcceptPush @"APP_FriendRequestPush"
+#define APP_UserInviteResultPush @"APP_UserInviteResultPush"
+#define APP_DidReceiveMessagePush @"APP_DidReceiveMessage"
+
 #define APP_ReloadIssueMessage @"APP_ReloadIssueMessage"
 
 // NSUserDefaults Keys
@@ -133,6 +143,15 @@ typedef enum{
     SIDEBAR_SETTINGS_ITEM,
     SIDEBAR_LOGOUT_ITEM
 }SIDEBAR_ITEMS;
+
+typedef enum{
+    PUSH_FRIENDREQUEST = 1,
+    PUSH_USERINVITE,
+    PUSH_USERINVITEACCEPT,
+    PUSH_CHATMESSAGE,
+    PUSH_OFFER,
+    PUSH_ACCEPTOFFER
+}PUSH_ITEMS;
 
 #define     SIDEBAR_WIDTH_RATE                      0.6f
 

@@ -2,7 +2,7 @@
 //  LeftPanelViewController.m
 //  DomumLink
 //
-//  Created by AnMac on 1/15/15.
+//  Created by Branislav on 1/15/15.
 //  Copyright (c) 2015 Petr. All rights reserved.
 //
 
@@ -10,17 +10,19 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SideMenuTableViewCell.h"
 #import "MySidePanelController.h"
+#import "UIImageView+WebCache.h"
+#import "FriendAcceptViewController.h"
 
-@interface LeftPanelViewController ()
+@interface LeftPanelViewController (){
 
-@property (nonatomic, strong) IBOutlet UITableView *menuTableView;
-@property (nonatomic, strong) NSMutableArray *menuPages;
-
-@property (nonatomic, strong) IBOutlet UIView *containerView, *topView;
-@property (nonatomic, strong) IBOutlet UIImageView *userPhotoImageView;
-@property (nonatomic, strong) IBOutlet UILabel *userName;
-
-
+    BOOL friendRequest;
+    BOOL chatReceive;
+    BOOL offerRequest;
+    NSString *friendRequestUserId;
+    NSString *offerId;
+    NSString *venueId;
+    NSString *inviteId;
+}
 @end
 
 @implementation LeftPanelViewController
@@ -37,12 +39,72 @@
 }
 
 - (void)initView {
+    
+    friendRequest = NO;
+    chatReceive = NO;
+    offerRequest = NO;
+    
+    NSMutableDictionary *userProfile = [[NSMutableDictionary alloc] init];
+    userProfile = [appController.currentUser objectForKey:@"user"];
+    
+    NSString *userFirstName = @"John";
+    userFirstName = [userProfile objectForKey:@"firstname"];
+    NSString *userLastName = @"Doe";
+    userLastName = [userProfile objectForKey:@"lastname"];
+    NSMutableArray* userImages = [[NSMutableArray alloc] init];
+    userImages = (NSMutableArray *)[userProfile objectForKey:@"images"];
 
     //[commonUtils setWFUserPhoto:self.userPhotoImageView byPhotoUrl:[appController.currentUser objectForKey:@"user_photo_url"]];
     [self.userPhotoImageView setImage:[UIImage imageNamed:@"user"]];
-    _userName.text = @"Jessy Kari";
-    
+    if (userImages.count != 0) {
+        NSString* avatarImageURL = [userImages objectAtIndex:0];
+        if ([avatarImageURL isEqual:[NSNull null]]){
+            //[self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+            [self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+        }else{
+            
+//            [commonUtils setImageViewAFNetworking:self.userPhotoImageView withImageUrl:avatarImageURL withPlaceholderImage:[UIImage imageNamed:@"avatar_placeholder"]];
+            NSURL* imageURL = [NSURL URLWithString:avatarImageURL];
+            self.userPhotoImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
+        }
+    }
+    else{
+        //[self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+        [self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+    }
+
+    _userName.text = [NSString stringWithFormat:@"%@ %@", userFirstName, userLastName];
+
 }
+
+#pragma mark - Did Receive Unread Message
+- (void)friendRequestNoti {
+    
+    NSLog(@"apnsMessage:--->%@", appController.apnsMessage);
+    friendRequestUserId = [appController.apnsMessage objectForKey:@"friend_id"];
+    friendRequest = YES;
+    [self.menuTableView reloadData];
+
+}
+
+- (void)chatMessage {
+    
+    NSLog(@"apnsMessage:--->%@", appController.apnsMessage);
+    chatReceive = YES;
+    [self.menuTableView reloadData];
+
+}
+
+- (void)offerReceive {
+    
+    NSLog(@"apnsMessage:--->%@", appController.apnsMessage);
+    offerId = [appController.apnsMessage objectForKey:@"offer_id"];
+    venueId = [appController.apnsMessage objectForKey:@"host_user_id"];
+    inviteId = [appController.apnsMessage objectForKey:@"invite_id"];
+    offerRequest = YES;
+    [self.menuTableView reloadData];
+}
+
 
 - (void)viewDidLayoutSubviews {
     CGRect containerFrame = self.containerView.frame;
@@ -98,8 +160,16 @@
     } else {
         [cell.bgLabel setBackgroundColor:RGBA(243, 244, 244, 1)];
     }
-    [cell.btnIcon setImage:[UIImage imageNamed:icon] forState:UIControlStateNormal];
     
+    if(friendRequest == YES && indexPath.row == 5) [cell.btnIcon setImage:[UIImage imageNamed:@"icon_friendrequest"] forState:UIControlStateNormal];
+    else if(chatReceive == YES && indexPath.row == 1){
+        [cell.btnIcon setImage:[UIImage imageNamed:@"icon_chatnoti"] forState:UIControlStateNormal];
+    }
+    else if(offerRequest == YES && indexPath.row == 4){
+        [cell.btnIcon setImage:[UIImage imageNamed:@"icon_offernoti"] forState:UIControlStateNormal];
+    }
+    else{   [cell.btnIcon setImage:[UIImage imageNamed:icon] forState:UIControlStateNormal];
+    }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -115,9 +185,13 @@
     UserSearchViewController *userSearchViewController;
     UserProfileViewController *userProfileViewController;
     ManageSettingViewController *userSettingViewController;
-    UserInviteReceiveViewController *userInviteReceiveViewController;
     ChatViewController *chatViewController;
     UserReceiveOffersViewController *userReceiveOffersViewController;
+    FriendAcceptViewController *friendAcceptViewController;
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LoginViewController* loginViewController =
+    (LoginViewController*) [storyboard instantiateViewControllerWithIdentifier:@"LoginVC"];
     
     UINavigationController *navController;
     
@@ -128,9 +202,20 @@
             self.sidePanelController.centerPanel = navController;
             break;
         case 2:
-            chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserChatVC"];
-            navController = [[UINavigationController alloc] initWithRootViewController: chatViewController];
-            self.sidePanelController.centerPanel = navController;
+            if(chatReceive == YES) {
+                chatReceive = NO;
+                [self.menuTableView reloadData];
+                chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserChatVC"];
+                chatViewController.unreadMessage = @"1";
+                navController = [[UINavigationController alloc] initWithRootViewController: chatViewController];
+                self.sidePanelController.centerPanel = navController;
+            }else{
+                chatViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserChatVC"];
+                chatViewController.unreadMessage = @"0";
+                navController = [[UINavigationController alloc] initWithRootViewController: chatViewController];
+                self.sidePanelController.centerPanel = navController;
+            }
+            
             break;
         case 3:
             userSearchViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserSearchVC"];
@@ -145,14 +230,37 @@
             self.sidePanelController.centerPanel = navController;
             break;
         case 5:
+            if(offerRequest == YES) {
+                
+                offerRequest = NO;
+                [self.menuTableView reloadData];
             userReceiveOffersViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserReceiveOffersVC"];
+                userReceiveOffersViewController.offerId = offerId;
+                userReceiveOffersViewController.venueId = venueId;
+                userReceiveOffersViewController.inviteId = inviteId;
             navController = [[UINavigationController alloc] initWithRootViewController: userReceiveOffersViewController];
             self.sidePanelController.centerPanel = navController;
+            }
+            else{
+                [commonUtils showAlert:@"Attention!" withMessage:@"You haven't received the offer request yet."];
+            }
             break;
         case 6:
-            userInviteReceiveViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserInviteReceiveVC"];
-            navController = [[UINavigationController alloc] initWithRootViewController: userInviteReceiveViewController];
-            self.sidePanelController.centerPanel = navController;
+            if(friendRequest == YES) {
+            
+            friendRequest = NO;
+            [self.menuTableView reloadData];
+                if(friendRequestUserId != nil){
+                    friendAcceptViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FriendAcceptVC"];
+                    friendAcceptViewController.friendRequestUserId = friendRequestUserId;
+                    navController = [[UINavigationController alloc] initWithRootViewController: friendAcceptViewController];
+                    self.sidePanelController.centerPanel = navController;
+                }
+            }
+            else{
+                [commonUtils showAlert:@"Attention!" withMessage:@"You haven't received the friend request yet."];
+            }
+            
             break;
             
         case 7:
@@ -162,7 +270,15 @@
             break;
             
         case 8:
-            //[self defaultShare];
+            [commonUtils removeUserDefaultDic:@"current_user"];
+            appController.currentUser = [[NSMutableDictionary alloc] init];
+            [commonUtils setUserDefault:@"logged_out" withFormat:@"1"];
+            [commonUtils setUserDefault:@"flag_location_query_enabled" withFormat:@"0"];
+            [commonUtils setUserDefault:@"settingChanged" withFormat:@"0"];
+            //[self.navigationController popToRootViewControllerAnimated:NO];
+            
+            [self.navigationController pushViewController:loginViewController animated:YES];
+           
             break;
         default:
             break;
@@ -187,13 +303,33 @@
 #pragma mark -  Left Side Menu Show
 
 - (void)onMenuShow {
-    if([commonUtils getUserDefault:@"is_my_profile_changed"]) {
-        [commonUtils removeUserDefault:@"is_my_profile_changed"];
+    if([[commonUtils getUserDefault:@"profileChanged"] isEqualToString:@"1"]){
         [self initView];
+        [commonUtils setUserDefault:@"profileChanged" withFormat:@"0"];
+    }
+    
+    if([[commonUtils getUserDefault:@"apns_message_arrived"] isEqualToString:@"1"]){
+        
+        int pushType = [[appController.apnsMessage objectForKey:@"push_type"] intValue];
+        switch (pushType) {
+            case PUSH_FRIENDREQUEST:
+                [self friendRequestNoti];
+                break;
+            case PUSH_CHATMESSAGE:
+                [self chatMessage];
+                break;
+            case PUSH_OFFER:
+                [self offerReceive];
+                break;
+            default:
+                break;
+        }
+
+        [commonUtils setUserDefault:@"apns_message_arrived" withFormat:@"0"];
     }
 }
 - (void)onMenuHide {
-
+    
 }
 
 @end

@@ -2,7 +2,7 @@
 //  PeopleNearbyViewController.h
 //  Mixl
 //
-//  Created by Jose on 4/20/16.
+//  Created by Branislav on 4/20/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 

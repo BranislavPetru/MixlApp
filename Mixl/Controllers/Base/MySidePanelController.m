@@ -2,7 +2,7 @@
 //  MySidePanelController.m
 //  CustomKeyboardGallery
 //
-//  Created by Urucode on 7/25/14.
+//  Created by Branislav on 7/25/14.
 //  Copyright (c) 2014 UruCode. All rights reserved.
 //
 
@@ -79,10 +79,30 @@
 
 
 -(void) awakeFromNib {
+    
+    if([[commonUtils getUserDefault:@"aps_type"] isEqualToString:@"2"]){
+        [commonUtils setUserDefault:@"aps_type" withFormat:@"0"];
+        UserInviteReceiveViewController *rootViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserInviteReceiveVC"];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: rootViewController];
+        
+        [self setCenterPanel:navController];
+        [self setLeftPanel:[self.storyboard instantiateViewControllerWithIdentifier:@"leftPanelPage"]];
+   
+    }else if([[commonUtils getUserDefault:@"aps_type"] isEqualToString:@"3"]){
+        [commonUtils setUserDefault:@"aps_type" withFormat:@"0"];
+        UserAcceptedViewController *rootViewController = [self.storyboard  instantiateViewControllerWithIdentifier:@"UserAcceptedVC"];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: rootViewController];
+        
+        [self setCenterPanel:navController];
+        [self setLeftPanel:[self.storyboard instantiateViewControllerWithIdentifier:@"leftPanelPage"]];
+        
+    }else
+    {
     UserSearchViewController *rootViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UserSearchVC"];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: rootViewController];
     [self setCenterPanel:navController];
     [self setLeftPanel:[self.storyboard instantiateViewControllerWithIdentifier:@"leftPanelPage"]];
+    }
 }
 
 

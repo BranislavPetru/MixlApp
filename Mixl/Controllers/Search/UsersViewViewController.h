@@ -2,7 +2,7 @@
 //  UsersViewViewController.h
 //  Mixl
 //
-//  Created by Jose on 4/19/16.
+//  Created by Branislav on 4/19/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 

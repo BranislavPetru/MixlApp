@@ -47,7 +47,7 @@ static AppController *_appController;
         _menuPages = [@[
                         [@{@"tag" : @"1", @"title" : @"Profile", @"icon" : @"icon_userprofile"} mutableCopy],
                         [@{@"tag" : @"2", @"title" : @"Chat", @"icon" : @"icon_chat"} mutableCopy],
-                        [@{@"tag" : @"3", @"title" : @"Poeple Nearby", @"icon" : @"icon_peoplenearby"} mutableCopy],
+                        [@{@"tag" : @"3", @"title" : @"People Nearby", @"icon" : @"icon_peoplenearby"} mutableCopy],
                         [@{@"tag" : @"4", @"title" : @"Friends Nearby", @"icon" : @"icon_groupnearby"} mutableCopy],
                         [@{@"tag" : @"5", @"title" : @"Offers", @"icon" : @"icon_offer"} mutableCopy],
                         [@{@"tag" : @"6", @"title" : @"Friend Requests", @"icon" : @"icon_peoplenearby"} mutableCopy],
@@ -59,7 +59,7 @@ static AppController *_appController;
         _venuemenuPages = [@[
                         [@{@"tag" : @"1", @"title" : @"Profile", @"icon" : @"icon_barprofile"} mutableCopy],
                         [@{@"tag" : @"2", @"title" : @"Offers", @"icon" : @"icon_offer"} mutableCopy],
-                        [@{@"tag" : @"3", @"title" : @"Poeple Nearby", @"icon" : @"icon_peoplenearby"} mutableCopy],
+                        [@{@"tag" : @"3", @"title" : @"People Nearby", @"icon" : @"icon_peoplenearby"} mutableCopy],
                         [@{@"tag" : @"4", @"title" : @"Vouchers Claimed", @"icon" : @"icon_menuclaimed"} mutableCopy],
                         [@{@"tag" : @"5", @"title" : @"Vouchers Pending", @"icon" : @"icon_pendding"} mutableCopy],
                         [@{@"tag" : @"6", @"title" : @"Settings", @"icon" : @"icon_setting"} mutableCopy],
@@ -69,48 +69,31 @@ static AppController *_appController;
         
         // Peoples Nearby
         _peoplesNearby = [[NSMutableArray alloc] init];
-        _peoplesNearby = [@[
-                        [@{@"fname" : @"Ravon", @"lname" : @"T.", @"age" : @"28", @"gender" : @"m", @"distance" : @"1", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"1skdjfhsdkjfsldksdlfkj"} mutableCopy],
-                        [@{@"fname" : @"John", @"lname" : @"A.", @"age" : @"22", @"gender" : @"f", @"distance" : @"2", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"2skdjfhsdkjfsldksdlfkj"} mutableCopy],
-                        [@{@"fname" : @"Roman", @"lname" : @"S.", @"age" : @"21", @"gender" : @"m", @"distance" : @"3", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"3skdjfhsdkjfsldksdlfkj"} mutableCopy],
-                        [@{@"fname" : @"Joe", @"lname" : @"T.", @"age" : @"24", @"gender" : @"f", @"distance" : @"4", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"4skdjfhsdkjfsldksdlfkj"} mutableCopy],
-                        [@{@"fname" : @"Tom", @"lname" : @"T.", @"age" : @"25", @"gender" : @"m", @"distance" : @"5", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"5skdjfhsdkjfsldksdlfkj"} mutableCopy],
-                        [@{@"fname" : @"Alli", @"lname" : @"T.", @"age" : @"27", @"gender" : @"f", @"distance" : @"6", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"6skdjfhsdkjfsldksdlfkj"} mutableCopy],
-                        [@{@"fname" : @"August", @"lname" : @"T.", @"age" : @"28", @"gender" : @"m", @"distance" : @"7", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"7skdjfhsdkjfsldksdlfkj"} mutableCopy],
-                        [@{@"fname" : @"Douglas", @"lname" : @"T.", @"age" : @"29", @"gender" : @"f", @"distance" : @"8", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"8skdjfhsdkjfsldksdlfkj"} mutableCopy]
-                        ] mutableCopy];
+//        _peoplesNearby = [@[
+//                        [@{@"fname" : @"Ravon", @"lname" : @"T.", @"age" : @"28", @"gender" : @"m", @"distance" : @"1", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"1skdjfhsdkjfsldksdlfkj"} mutableCopy],
+//                        [@{@"fname" : @"John", @"lname" : @"A.", @"age" : @"22", @"gender" : @"f", @"distance" : @"2", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"2skdjfhsdkjfsldksdlfkj"} mutableCopy],
+//                        [@{@"fname" : @"Roman", @"lname" : @"S.", @"age" : @"21", @"gender" : @"m", @"distance" : @"3", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"3skdjfhsdkjfsldksdlfkj"} mutableCopy],
+//                        [@{@"fname" : @"Joe", @"lname" : @"T.", @"age" : @"24", @"gender" : @"f", @"distance" : @"4", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"4skdjfhsdkjfsldksdlfkj"} mutableCopy],
+//                        [@{@"fname" : @"Tom", @"lname" : @"T.", @"age" : @"25", @"gender" : @"m", @"distance" : @"5", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"5skdjfhsdkjfsldksdlfkj"} mutableCopy],
+//                        [@{@"fname" : @"Alli", @"lname" : @"T.", @"age" : @"27", @"gender" : @"f", @"distance" : @"6", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"6skdjfhsdkjfsldksdlfkj"} mutableCopy],
+//                        [@{@"fname" : @"August", @"lname" : @"T.", @"age" : @"28", @"gender" : @"m", @"distance" : @"7", @"image1" : @"user", @"image2" : @"inviteduser", @"description" : @"7skdjfhsdkjfsldksdlfkj"} mutableCopy],
+//                        [@{@"fname" : @"Douglas", @"lname" : @"T.", @"age" : @"29", @"gender" : @"f", @"distance" : @"8", @"image1" : @"inviteduser", @"image2" : @"user", @"description" : @"8skdjfhsdkjfsldksdlfkj"} mutableCopy]
+//                        ] mutableCopy];
         
-        // Peoples Nearby
+        // Friends Nearby
         _Friends = [[NSMutableArray alloc] init];
-        _Friends = [@[
-                            [@{@"fname" : @"Ravon", @"lname" : @"T.", @"distance" : @"1", @"status" : @"online", @"image" : @"inviteduser"} mutableCopy],
-                            [@{@"fname" : @"John", @"lname" : @"A.", @"distance" : @"2", @"status" : @"offline", @"image" : @"user"} mutableCopy],
-                            [@{@"fname" : @"Roman", @"lname" : @"S.", @"distance" : @"3", @"status" : @"offline", @"image" : @"inviteduser"} mutableCopy],
-                            [@{@"fname" : @"Joe", @"lname" : @"T.", @"distance" : @"4", @"status" : @"online", @"image" : @"user"} mutableCopy],
-                            [@{@"fname" : @"Tom", @"lname" : @"T.", @"distance" : @"5", @"status" : @"online", @"image" : @"inviteduser"} mutableCopy],
-                            [@{@"fname" : @"Alli", @"lname" : @"T.", @"distance" : @"6", @"status" : @"online", @"image" : @"user"} mutableCopy],
-                            [@{@"fname" : @"August", @"lname" : @"T.", @"distance" : @"7", @"status" : @"offline", @"image" : @"inviteduser"} mutableCopy],
-                            [@{@"fname" : @"Douglas", @"lname" : @"T.", @"distance" : @"8", @"status" : @"offline", @"image" : @"user"} mutableCopy]
-                            ] mutableCopy];
-        
-        _Friends = [[NSMutableArray alloc] init];
-        _Friends = [@[
-                      [@{@"fname" : @"Ravon", @"lname" : @"T.", @"distance" : @"1", @"status" : @"online", @"image" : @"inviteduser"} mutableCopy],
-                      [@{@"fname" : @"John", @"lname" : @"A.", @"distance" : @"2", @"status" : @"offline", @"image" : @"user"} mutableCopy],
-                      [@{@"fname" : @"Roman", @"lname" : @"S.", @"distance" : @"3", @"status" : @"offline", @"image" : @"inviteduser"} mutableCopy],
-                      [@{@"fname" : @"Joe", @"lname" : @"T.", @"distance" : @"4", @"status" : @"online", @"image" : @"user"} mutableCopy],
-                      [@{@"fname" : @"Tom", @"lname" : @"T.", @"distance" : @"5", @"status" : @"online", @"image" : @"inviteduser"} mutableCopy],
-                      [@{@"fname" : @"Alli", @"lname" : @"T.", @"distance" : @"6", @"status" : @"online", @"image" : @"user"} mutableCopy],
-                      [@{@"fname" : @"August", @"lname" : @"T.", @"distance" : @"7", @"status" : @"offline", @"image" : @"inviteduser"} mutableCopy],
-                      [@{@"fname" : @"Douglas", @"lname" : @"T.", @"distance" : @"8", @"status" : @"offline", @"image" : @"user"} mutableCopy]
-                      ] mutableCopy];
+//        _Friends = [@[
+//                            [@{@"fname" : @"Ravon", @"lname" : @"T.", @"distance" : @"1", @"status" : @"online", @"image" : @"inviteduser"} mutableCopy],
+//                            [@{@"fname" : @"John", @"lname" : @"A.", @"distance" : @"2", @"status" : @"offline", @"image" : @"user"} mutableCopy],
+//                            [@{@"fname" : @"Roman", @"lname" : @"S.", @"distance" : @"3", @"status" : @"offline", @"image" : @"inviteduser"} mutableCopy],
+//                            [@{@"fname" : @"Joe", @"lname" : @"T.", @"distance" : @"4", @"status" : @"online", @"image" : @"user"} mutableCopy],
+//                            [@{@"fname" : @"Tom", @"lname" : @"T.", @"distance" : @"5", @"status" : @"online", @"image" : @"inviteduser"} mutableCopy],
+//                            [@{@"fname" : @"Alli", @"lname" : @"T.", @"distance" : @"6", @"status" : @"online", @"image" : @"user"} mutableCopy],
+//                            [@{@"fname" : @"August", @"lname" : @"T.", @"distance" : @"7", @"status" : @"offline", @"image" : @"inviteduser"} mutableCopy],
+//                            [@{@"fname" : @"Douglas", @"lname" : @"T.", @"distance" : @"8", @"status" : @"offline", @"image" : @"user"} mutableCopy]
+//                            ] mutableCopy];
         
         _offersList = [[NSMutableArray alloc] init];
-        _offersList = [@[
-                      [@{@"name" : @"Free Drink", @"time" : @"00:45:34", @"image" : @"voucher", @"description" : @"sdfsadfsadf"} mutableCopy],
-                      [@{@"name" : @"Two for One", @"time" : @"00:55:34", @"image" : @"voucher", @"description" : @"ssdfasdfsdfdfsadf"} mutableCopy],
-                      [@{@"name" : @"Offer for you", @"time" : @"00:25:34", @"image" : @"voucher", @"description" : @"sdfsadfgdfdfsadf"} mutableCopy]
-                      ] mutableCopy];
         
         _claimedUsers = [[NSMutableArray alloc] init];
         _claimedUsers = [@[
@@ -158,6 +141,7 @@ static AppController *_appController;
         
         // Data
         _currentUser = [[NSMutableDictionary alloc] init];
+        _receiverUser = [[NSMutableDictionary alloc] init];
         _favoriteUsers = [[NSMutableArray alloc] init];
     }
     return self;

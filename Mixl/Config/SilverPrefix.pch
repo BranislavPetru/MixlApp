@@ -20,6 +20,8 @@
 
 #import "AppController.h"
 #import "CommonUtils.h"
+#import "ServerConnect.h"
+#import "AppDelegate.h"
 
 #define appController [AppController sharedInstance]
 #define commonUtils [CommonUtils shared]
@@ -27,6 +29,7 @@
 
 // User Pages
 #import "UserBaseViewController.h"
+#import "LoginViewController.h"
 
 // Main Pages
 #import "BaseViewController.h"
@@ -43,6 +46,7 @@
 #import "UserProfileViewController.h"
 #import "UserRegistrationViewController.h"
 #import "UserInviteReceiveViewController.h"
+#import "UserAcceptedViewController.h"
 #import "ChatViewController.h"
 #import "UserReceiveOffersViewController.h"
 
@@ -52,5 +56,8 @@
 #import "BusinessSettingViewController.h"
 #import "OffersViewController.h"
 #import "ClaimedVouchersViewController.h"
+#import "AcceptedOfferViewController.h"
+
+#import "JSWaiter.h"
 
 #endif

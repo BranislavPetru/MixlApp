@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : BaseViewController
+@interface ViewController : UIViewController
 
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activeIndicator;
 

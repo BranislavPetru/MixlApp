@@ -7,7 +7,7 @@
 @interface AppController : NSObject
 
 @property (nonatomic, strong) NSMutableArray *introSliderImages;
-@property (nonatomic, strong) NSMutableDictionary *currentUser, *apnsMessage;
+@property (nonatomic, strong) NSMutableDictionary *currentUser, *apnsMessage, *receiverUser;
 @property (nonatomic, strong) NSMutableArray *barks, *myBarks, *likedBarks, *menuPages, *venuemenuPages, *peoplesNearby, *Friends, *offersList, *favoriteUsers, *statsPeriods, *avatars, *claimedUsers, *notclaimedUsers;
 @property (nonatomic, strong) UIImage *postBarkImage, *editProfileImage;
 
@@ -15,7 +15,7 @@
 @property (nonatomic, strong) NSString *currentMenuTag, *avatarUrlTemp, *facebookPhotoUrlTemp;
 @property (nonatomic, strong) NSMutableDictionary *currentNavBark, *currentNavBarkStat;
 @property (nonatomic, assign) BOOL isFromSignUpSecondPage, isNewBarkUploaded, isMyProfileChanged;
-@property (nonatomic, strong) NSString *statsVelocityHistoryPeriod;
+@property (nonatomic, strong) NSString *statsVelocityHistoryPeriod, *password, *latestMessageId;
 
 
 // Utility Variables

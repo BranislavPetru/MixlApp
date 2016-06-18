@@ -28,6 +28,8 @@ static UIColor* color = nil;
 {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]))
 	{
+        self.clipsToBounds = YES;
+        self.contentView.clipsToBounds = YES;
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 
         // Create the image view
@@ -36,6 +38,7 @@ static UIColor* color = nil;
         _image.clearsContextBeforeDrawing = NO;
         _image.contentMode = UIViewContentModeRedraw;
         _image.autoresizingMask = 0;
+        _image.clipsToBounds =YES;
         [self.contentView addSubview:_image];
         
         // Create the speech bubble view
@@ -46,6 +49,7 @@ static UIColor* color = nil;
         _bubbleView.clearsContextBeforeDrawing = NO;
         _bubbleView.contentMode = UIViewContentModeRedraw;
         _bubbleView.autoresizingMask = 0;
+        _bubbleView.clipsToBounds = YES;
         [self.contentView addSubview:_bubbleView];
         
 		// Create the label
@@ -84,30 +88,69 @@ static UIColor* color = nil;
 	BubbleType bubbleType;
     CGSize bubbleSize = [SpeechBubbleView sizeForText:[message objectForKey:@"Message"]];
     
-	if ([[message objectForKey:@"Sender"] isEqualToString:@"Me"])
-	{
-        bubbleType = BubbleTypeRighthand;
-        senderName = @"Me";
+    if([[message objectForKey:@"Message"] rangeOfString:@"http://"].location == NSNotFound){
+        if ([[message objectForKey:@"Sender"] isEqualToString:@"Me"])
+        {
+            bubbleType = BubbleTypeRighthand;
+            senderName = @"Me";
+            
+            point.x = [[UIScreen mainScreen] bounds].size.width - bubbleSize.width;
+            _label.textAlignment = NSTextAlignmentRight;
+            _image.frame = CGRectZero;
+        }
+        else
+        {
+            bubbleType = BubbleTypeLefthand;
+            senderName = @"Receiver";
+         
+            _label.textAlignment = NSTextAlignmentLeft;
+            _image.frame = CGRectZero;
+            point.x = 10;
+        }
         
-        point.x = [[UIScreen mainScreen] bounds].size.width - bubbleSize.width;
-        _label.textAlignment = NSTextAlignmentRight;
-        _image.frame = CGRectZero;
-	}
-	else
-	{
-        bubbleType = BubbleTypeLefthand;
-        senderName = @"Server";
-        _label.textAlignment = NSTextAlignmentLeft;
-        _image.image = [UIImage imageNamed:@"logo"];
-        _image.frame = CGRectMake(10, 15, 40, 40);
-        point.x = 50;
+        // Resize the bubble view and tell it to display the message text
+        CGRect rect;
+        rect.origin = point;
+        rect.size = bubbleSize;
+        _bubbleView.frame = rect;
+        [_bubbleView setText:[message objectForKey:@"Message"] bubbleType:bubbleType];
     }
-    // Resize the bubble view and tell it to display the message text
-	CGRect rect;
-	rect.origin = point;
-	rect.size = bubbleSize;
-	_bubbleView.frame = rect;
-	[_bubbleView setText:[message objectForKey:@"Message"] bubbleType:bubbleType];
+    else{
+        
+        if ([[message objectForKey:@"Sender"] isEqualToString:@"Me"])
+        {
+            bubbleType = BubbleTypeRighthand;
+            senderName = @"Me";
+            
+            point.x = [[UIScreen mainScreen] bounds].size.width - bubbleSize.width;
+            _label.textAlignment = NSTextAlignmentRight;
+            [commonUtils setImageViewAFNetworking:_image withImageUrl:[message objectForKey:@"Message"] withPlaceholderImage:[UIImage imageNamed:@"avatar_placeholder"]];
+            CGRect rect;
+            rect.origin = point;
+            rect.size = bubbleSize;
+            _image.frame = rect;
+        }
+        else
+        {
+            bubbleType = BubbleTypeLefthand;
+            senderName = @"Receiver";
+            
+            point.x = 10;
+            _label.textAlignment = NSTextAlignmentLeft;
+            [commonUtils setImageViewAFNetworking:_image withImageUrl:[message objectForKey:@"Message"] withPlaceholderImage:[UIImage imageNamed:@"avatar_placeholder"]];
+            CGRect rect;
+            rect.origin = point;
+            rect.size = bubbleSize;
+            _image.frame = rect;
+        }
+        
+        // Resize the bubble view and tell it to display the message text
+//        CGRect rect;
+//        rect.origin = point;
+//        rect.size = bubbleSize;
+//        _bubbleView.frame = rect;
+//        [_bubbleView setText:[message objectForKey:@"Message"] bubbleType:bubbleType];
+    }
 
 	// Format the message date
 	NSDateFormatter* formatter = [[NSDateFormatter alloc] init];

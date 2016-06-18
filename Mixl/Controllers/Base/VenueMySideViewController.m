@@ -2,7 +2,7 @@
 //  VenueMySideViewController.m
 //  Mixl
 //
-//  Created by Jose on 4/20/16.
+//  Created by Branislav on 4/20/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 
@@ -75,12 +75,24 @@
     // Dispose of any resources that can be recreated.
 }
 
-
 -(void) awakeFromNib {
-    PeopleNearbyViewController *rootViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"PeopleNearbyVC"];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: rootViewController];
-    [self setCenterPanel:navController];
-    [self setLeftPanel:[self.storyboard instantiateViewControllerWithIdentifier:@"venueleftPanelPage"]];
+    
+    if([[commonUtils getUserDefault:@"aps_type"] isEqualToString:@"6"]){
+        [commonUtils setUserDefault:@"aps_type" withFormat:@"0"];
+        AcceptedOfferViewController *rootViewController = [self.storyboard  instantiateViewControllerWithIdentifier:@"AcceptedOfferVC"];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: rootViewController];
+        
+        [self setCenterPanel:navController];
+        [self setLeftPanel:[self.storyboard instantiateViewControllerWithIdentifier:@"venueleftPanelPage"]];
+        
+    }else
+    {
+
+        PeopleNearbyViewController *rootViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"PeopleNearbyVC"];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: rootViewController];
+        [self setCenterPanel:navController];
+        [self setLeftPanel:[self.storyboard instantiateViewControllerWithIdentifier:@"venueleftPanelPage"]];
+    }
 }
 
 

@@ -2,7 +2,7 @@
 //  AppDelegate.h
 //  Mixl
 //
-//  Created by admin on 4/6/16.
+//  Created by Branislav on 4/6/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 

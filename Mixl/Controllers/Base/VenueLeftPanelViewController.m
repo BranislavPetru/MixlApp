@@ -2,7 +2,7 @@
 //  VenueLeftPanelViewController.m
 //  Mixl
 //
-//  Created by Jose on 4/20/16.
+//  Created by Branislav on 4/20/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 
@@ -36,10 +36,33 @@
 
 - (void)initView {
     
-    //[commonUtils setWFUserPhoto:self.userPhotoImageView byPhotoUrl:[appController.currentUser objectForKey:@"user_photo_url"]];
-    [self.userPhotoImageView setImage:[UIImage imageNamed:@"bar_menuhead"]];
-    _userName.text = @"Cafe Bar";
+    NSMutableDictionary *userProfile = [[NSMutableDictionary alloc] init];
+    userProfile = [appController.currentUser objectForKey:@"user"];
     
+    NSString *businessName = @"Cafe Bar";
+    businessName = [userProfile objectForKey:@"businessname"];
+    NSMutableArray* userImages = [[NSMutableArray alloc] init];
+    userImages = (NSMutableArray *)[userProfile objectForKey:@"images"];
+    
+    [self.userPhotoImageView setImage:[UIImage imageNamed:@"user"]];
+    if (userImages.count != 0) {
+        NSString* avatarImageURL = [userImages objectAtIndex:0];
+        if ([avatarImageURL isEqual:[NSNull null]]){
+            //[self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+            [self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+        }else{
+    
+            NSURL* imageURL = [NSURL URLWithString:avatarImageURL];
+            self.userPhotoImageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageURL]];
+        }
+    }
+    else{
+        //[self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+        [self.userPhotoImageView setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+    }
+    
+    _userName.text = businessName;
+
 }
 
 - (void)viewDidLayoutSubviews {
@@ -115,6 +138,10 @@
     BusinessSettingViewController *businessSettingViewController;
     OffersViewController *offersViewController;
     ClaimedVouchersViewController *claimedVouchersViewController;
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LoginViewController* loginViewController =
+    (LoginViewController*) [storyboard instantiateViewControllerWithIdentifier:@"LoginVC"];
    
     UINavigationController *navController;
     
@@ -126,6 +153,7 @@
             break;
         case 2:
             offersViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"BusicessOffersVC"];
+            offersViewController.offerIndex = 1;
             navController = [[UINavigationController alloc] initWithRootViewController: offersViewController];
             self.sidePanelController.centerPanel = navController;
             break;
@@ -153,7 +181,12 @@
             break;
             
         case 7:
-            //[self defaultShare];
+            [commonUtils removeUserDefaultDic:@"current_user"];
+            appController.currentUser = [[NSMutableDictionary alloc] init];
+            [commonUtils setUserDefault:@"logged_out" withFormat:@"1"];
+            [commonUtils setUserDefault:@"flag_location_query_enabled" withFormat:@"0"];
+            [commonUtils setUserDefault:@"settingChanged" withFormat:@"0"];
+            [self.navigationController pushViewController:loginViewController animated:YES];
             break;
         default:
             break;
@@ -161,32 +194,17 @@
     
 }
 
-#pragma mark - App Share Function
-- (void)defaultShare {
-    NSString *texttoshare = @"I'm using WOOF SOCIAL! I share and discover photos/videos from people around me and watch that content spread. It's free on Apple app store!";
-    UIImage *imagetoshare = [UIImage imageNamed:@"user_default_avatar"];
-    
-    
-    NSArray *activityItems = @[texttoshare, imagetoshare];
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
-    activityVC.excludedActivityTypes = @[UIActivityTypePostToTencentWeibo, UIActivityTypePostToWeibo];
-    
-    //activityVC.excludedActivityTypes = @[UIActivityTypeMessage, UIActivityTypeMail, UIActivityTypePostToFacebook, UIActivityTypePostToTwitter, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo, UIActivityTypePostToTencentWeibo, UIActivityTypePostToWeibo, UIActivityTypeAssignToContact, UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypeAirDrop];
-    [self presentViewController:activityVC animated:TRUE completion:nil];
-}
-
 #pragma mark -  Left Side Menu Show
 
 - (void)onMenuShow {
-    if([commonUtils getUserDefault:@"is_my_profile_changed"]) {
-        [commonUtils removeUserDefault:@"is_my_profile_changed"];
+    if([[commonUtils getUserDefault:@"profileChanged"] isEqualToString:@"1"]){
         [self initView];
+        [commonUtils setUserDefault:@"profileChanged" withFormat:@"0"];
     }
+    
 }
 - (void)onMenuHide {
     
 }
-
-
 
 @end

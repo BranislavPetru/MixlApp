@@ -2,7 +2,7 @@
 //  BusinessProfileViewController.h
 //  Mixl
 //
-//  Created by Jose on 4/20/16.
+//  Created by Branislav on 4/20/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 
@@ -10,6 +10,7 @@
 
 @interface BusinessProfileViewController : BaseViewController<UITextFieldDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *viewVenueImage;
 @property (strong, nonatomic) IBOutlet UIImageView *imgVenue;
 @property (strong, nonatomic) IBOutlet UIView *viewComponent;
 

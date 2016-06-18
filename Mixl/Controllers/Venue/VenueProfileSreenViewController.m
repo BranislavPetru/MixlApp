@@ -2,7 +2,7 @@
 //  VenueProfileSreenViewController.m
 //  Mixl
 //
-//  Created by Jose on 4/21/16.
+//  Created by Branislav on 4/21/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 

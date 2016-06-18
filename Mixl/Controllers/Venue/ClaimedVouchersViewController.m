@@ -2,7 +2,7 @@
 //  ClaimedVouchersViewController.m
 //  Mixl
 //
-//  Created by Jose on 4/20/16.
+//  Created by Branislav on 4/20/16.
 //  Copyright © 2016 Brani. All rights reserved.
 //
 
@@ -23,11 +23,71 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    claimedUsers = appController.claimedUsers;
-    notclaimedUsers = appController.notclaimedUsers;
-    [self initView];
+    [self initData];
 }
 
+- (void) initData{
+    
+    NSMutableDictionary *dicClaimed = [[NSMutableDictionary alloc] init];
+    [dicClaimed setObject:@"claimed" forKey:@"filter"];
+    NSLog(@"----  Request of Claimed: %@", dicClaimed);
+    [JSWaiter ShowWaiter:self.view title:@"Loading..." type:0];
+    [[ServerConnect sharedManager] GET:API_URL_RECEIVEINVITE withParams:dicClaimed onSuccess:^(id json) {
+        
+        [JSWaiter HideWaiter];
+        
+        NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:json];
+        NSLog(@"----------User Response Result:\n%@", result);
+        NSString *str = [result objectForKey:@"error"];
+        int flag = [str intValue];
+        if(flag == 0) {
+            
+            NSMutableArray *claims = [[NSMutableArray alloc] init];
+            claims = [result objectForKey:@"invites"];
+            claimedUsers = claims;
+            
+            NSMutableDictionary *dicUnClaimed = [[NSMutableDictionary alloc] init];
+            [dicUnClaimed setObject:@"unclaimed" forKey:@"filter"];
+            NSLog(@"----  Request of UnClaimed: %@", dicUnClaimed);
+            [[ServerConnect sharedManager] GET:API_URL_RECEIVEINVITE withParams:dicUnClaimed onSuccess:^(id json) {
+                
+                NSMutableDictionary *result = [NSMutableDictionary dictionaryWithDictionary:json];
+                NSLog(@"----------User Response Result:\n%@", result);
+                NSString *str = [result objectForKey:@"error"];
+                int flag = [str intValue];
+                if(flag == 0) {
+                    
+                    NSMutableArray *unclaims = [[NSMutableArray alloc] init];
+                    unclaims = [result objectForKey:@"invites"];
+                    notclaimedUsers = unclaims;
+                    
+                    [_tableClaimed reloadData];
+                    [_tableNotClaimed reloadData];
+                    
+                } else {
+                    NSArray *msg = (NSArray *)[result objectForKey:@"messages"];
+                    NSString *stringMsg = (NSString *)[msg objectAtIndex:0];
+                    if([stringMsg isEqualToString:@""]) stringMsg = @"Sorry, We can't find the user sent the friend request";
+                }
+                [self initView];
+                
+            } onFailure:^(NSInteger statusCode, id json) {
+                [JSWaiter HideWaiter];
+                [commonUtils showVAlertSimple:@"Connection Error" body:@"Please check your internet connection status." duration:1.0];
+            }];
+
+        } else {
+            NSArray *msg = (NSArray *)[result objectForKey:@"messages"];
+            NSString *stringMsg = (NSString *)[msg objectAtIndex:0];
+            if([stringMsg isEqualToString:@""]) stringMsg = @"Sorry, We can't find the user sent the friend request";
+        }
+        
+    } onFailure:^(NSInteger statusCode, id json) {
+        [JSWaiter HideWaiter];
+        [commonUtils showVAlertSimple:@"Connection Error" body:@"Please check your internet connection status." duration:1.0];
+    }];
+
+}
 - (void) initView {
     
     if(_tapType == 2)
@@ -38,6 +98,9 @@
     {
         [self showTap:NO];
     }
+    
+    [_tableClaimed reloadData];
+    [_tableNotClaimed reloadData];
     
 }
 
@@ -85,14 +148,30 @@
         ClaimedTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"ClaimedCell"];
         
         NSMutableDictionary *dic = [claimedUsers objectAtIndex:indexPath.row];
+        NSMutableDictionary *userProfile = [dic objectForKey:@"invitee_user_profile"];
+        NSString* name = [NSString stringWithFormat:@"%@ %@",[userProfile objectForKey:@"firstname"], [userProfile objectForKey:@"lastname"]];
+        [cell.lblName setText:name];
         
-        [cell.lblName setText:[NSString stringWithFormat:@"%@ %@", [dic objectForKey:@"fname"], [dic objectForKey:@"lname"]]];
-        [cell.lblAge setText:[NSString stringWithFormat:@"Age: %@", [dic objectForKey:@"age"]]];
-        [cell.lblOfferName setText:[NSString stringWithFormat:@"%@", [dic objectForKey:@"offername"]]];
+         NSArray *bithday = [[userProfile objectForKey:@"date_of_birth"] componentsSeparatedByString:@"-"];
+        [cell.lblAge setText:[NSString stringWithFormat:@"Age: %@", [commonUtils ageCount:[bithday objectAtIndex:0]]]];
         
-        NSString *image = [dic objectForKey:@"image"];
-        [cell.imgUser setImage:[UIImage imageNamed:image]];
+        [cell.lblOfferName setText:[NSString stringWithFormat:@"%@", [dic objectForKey:@"offerTitle"]]];
         
+        NSMutableArray* images = [[NSMutableArray alloc] init];
+        images = [userProfile objectForKey:@"images"];
+        if (images.count != 0) {
+            NSString* avatarImageURL = [images objectAtIndex:0];
+            NSLog(@"avatar image URL : %@", avatarImageURL);
+            if ([avatarImageURL isEqual:[NSNull null]]){
+                [cell.imgUser setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+            }else{
+                [commonUtils setImageViewAFNetworking:cell.imgUser withImageUrl:avatarImageURL withPlaceholderImage:[UIImage imageNamed:@"avatar_placeholder"]];
+            }
+        }
+        else{
+            [cell.imgUser setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+        }
+
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
@@ -100,14 +179,31 @@
         NotClaimedTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:@"NotClaimedCell"];
         
         NSMutableDictionary *dic = [notclaimedUsers objectAtIndex:indexPath.row];
+        NSMutableDictionary *userProfile = [dic objectForKey:@"invitee_user_profile"];
+        NSString* name = [NSString stringWithFormat:@"%@ %@",[userProfile objectForKey:@"firstname"], [userProfile objectForKey:@"lastname"]];
+        [cell.lblName setText:name];
         
-        [cell.lblName setText:[NSString stringWithFormat:@"%@ %@", [dic objectForKey:@"fname"], [dic objectForKey:@"lname"]]];
-        [cell.lblAge setText:[NSString stringWithFormat:@"Age: %@", [dic objectForKey:@"age"]]];
-        [cell.lblOfferName setText:[NSString stringWithFormat:@"%@", [dic objectForKey:@"offername"]]];
-         [cell.lblTime setText:[NSString stringWithFormat:@"%@", [dic objectForKey:@"time"]]];
+        NSArray *bithday = [[userProfile objectForKey:@"date_of_birth"] componentsSeparatedByString:@"-"];
+        [cell.lblAge setText:[NSString stringWithFormat:@"Age: %@", [commonUtils ageCount:[bithday objectAtIndex:0]]]];
         
-        NSString *image = [dic objectForKey:@"image"];
-        [cell.imgUser setImage:[UIImage imageNamed:image]];
+        [cell.lblOfferName setText:[NSString stringWithFormat:@"%@", [dic objectForKey:@"offerTitle"]]];
+
+        [cell.lblTime setText:[NSString stringWithFormat:@"%@", [dic objectForKey:@"remain_time"]]];
+        
+        NSMutableArray* images = [[NSMutableArray alloc] init];
+        images = [userProfile objectForKey:@"images"];
+        if (images.count != 0) {
+            NSString* avatarImageURL = [images objectAtIndex:0];
+            NSLog(@"avatar image URL : %@", avatarImageURL);
+            if ([avatarImageURL isEqual:[NSNull null]]){
+                [cell.imgUser setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+            }else{
+                [commonUtils setImageViewAFNetworking:cell.imgUser withImageUrl:avatarImageURL withPlaceholderImage:[UIImage imageNamed:@"avatar_placeholder"]];
+            }
+        }
+        else{
+            [cell.imgUser setImage:[UIImage imageNamed:@"avatar_placeholder.png"]];
+        }
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
@@ -118,11 +214,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if(tableView == _tableClaimed){
         
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        AcceptedOfferViewController* acceptedofferViewController =
-        (AcceptedOfferViewController*) [storyboard instantiateViewControllerWithIdentifier:@"AcceptedOfferVC"];
-        acceptedofferViewController.offeredUser = [claimedUsers objectAtIndex:indexPath.row];
-        [self.navigationController pushViewController:acceptedofferViewController animated:YES];
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//        AcceptedOfferViewController* acceptedofferViewController =
+//        (AcceptedOfferViewController*) [storyboard instantiateViewControllerWithIdentifier:@"AcceptedOfferVC"];
+//        acceptedofferViewController.offeredUser = [claimedUsers objectAtIndex:indexPath.row];
+//        [self.navigationController pushViewController:acceptedofferViewController animated:YES];
 
     }
 }

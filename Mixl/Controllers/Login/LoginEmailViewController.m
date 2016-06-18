@@ -65,6 +65,17 @@
         [paramDic setObject:_txtUserEmail.text forKey:@"email"];
         [paramDic setObject:_txtPassword.text forKey:@"password"];
         
+        if([commonUtils getUserDefault:@"currentLatitude"] && [commonUtils getUserDefault:@"currentLongitude"]) {
+            [paramDic setObject:[commonUtils getUserDefault:@"currentLatitude"] forKey:@"latitude"];
+            [paramDic setObject:[commonUtils getUserDefault:@"currentLongitude"] forKey:@"longitude"];
+        }
+        else{
+            [appController.vAlert doAlert:@"Notice" body:@"There is no your location info.\n Please Confirm location service and Try again!" duration:2.0f done:^(DoAlertView *alertView) {
+                return;
+            }];
+            
+        }
+        
         if([commonUtils getUserDefault:@"user_apns_id"] != nil) {
             [paramDic setObject:[commonUtils getUserDefault:@"user_apns_id"] forKey:@"io_token"];
             [self requestAPILogin:paramDic];
@@ -78,41 +89,47 @@
 }
 
 - (void)requestAPILogin:(NSMutableDictionary *)dic {
-    [commonUtils showActivityIndicatorColored:self.view];
+    [JSWaiter ShowWaiter:self.view title:@"Loging in..." type:0];
     [NSThread detachNewThreadSelector:@selector(requestDataLogin:) toTarget:self withObject:dic];
 }
 
-#pragma mark - UITextFieldDelegate
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return YES;
-}
 - (void) requestDataLogin:(id) params {
     
     NSDictionary *resObj = nil;
+    NSLog(@"-----------User Login Param: %@", params);
     resObj = [commonUtils httpJsonRequest:API_URL_USER_LOGIN withJSON:(NSMutableDictionary *) params];
     
-    [commonUtils hideActivityIndicator];
+    [JSWaiter HideWaiter];
     
     if (resObj != nil) {
         NSDictionary *result = (NSDictionary*)resObj;
-        BOOL status = [result objectForKey:@"error"];
-        if(status) {
+        NSString *str = [result objectForKey:@"error"];
+        int flag = [str intValue];
+        if(flag == 0) {
             
             appController.currentUser = [NSMutableDictionary dictionaryWithDictionary:result];
+            [commonUtils setUserDefault:@"authorized_token" withFormat:[[result objectForKey:@"user"] objectForKey:@"token"]];
+            [commonUtils setUserDefault:@"userPassword" withFormat:_txtPassword.text];
+            [commonUtils setUserDefault:@"flag_location_query_enabled" withFormat:@"1"];
             [commonUtils setUserDefaultDic:@"current_user" withDic:appController.currentUser];
+            NSLog(@"----------current info of logged in user: %@", appController.currentUser);
+            
+            [commonUtils setUserDefault:@"settingChanged" withFormat:@"1"];
+            [(AppDelegate *)[[UIApplication sharedApplication] delegate] updateLocationManager];
             
             if([[[appController.currentUser objectForKey:@"user"] objectForKey:@"type"] isEqualToString:@"u"]){
                 [self navToMainView];
             }
             else{
+                [commonUtils setUserDefault:@"offerChanged" withFormat:@"1"];
                 [self venuenavToMainView];
             }
 
         } else {
-            NSString *msg = (NSString *)[resObj objectForKey:@"messages"];
-            if([msg isEqualToString:@""]) msg = @"Please complete entire form";
-            [commonUtils showVAlertSimple:@"Warning" body:msg duration:1.4];
+            NSArray *msg = (NSArray *)[resObj objectForKey:@"messages"];
+            NSString *stringMsg = (NSString *)[msg objectAtIndex:0];
+            if([stringMsg isEqualToString:@""] || stringMsg == nil) stringMsg = @"Please complete entire form";
+            [commonUtils showVAlertSimple:@"Warning" body:stringMsg duration:1.4];
         }
     } else {
         
@@ -120,5 +137,10 @@
     }
 }
 
+#pragma mark - UITextFieldDelegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
 
 @end

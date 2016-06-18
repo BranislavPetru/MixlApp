@@ -30,10 +30,13 @@
 - (void)showVAlertSimple:(NSString *)title body:(NSString *)body duration:(float)duration {
     _dicAlertContent = [[NSMutableDictionary alloc] init];
     [_dicAlertContent setObject:title forKey:@"title"];
-    [_dicAlertContent setObject:body forKey:@"body"];
-    [_dicAlertContent setObject:[NSString stringWithFormat:@"%f", duration] forKey:@"duration"];
+    if(body != nil && [NSString stringWithFormat:@"%f", duration] != nil){
+        [_dicAlertContent setObject:body forKey:@"body"];
     
-    [self performSelector:@selector(vAlertSimpleThread) onThread:[NSThread mainThread] withObject:nil waitUntilDone:NO];
+        [_dicAlertContent setObject:[NSString stringWithFormat:@"%f", duration] forKey:@"duration"];
+    
+        [self performSelector:@selector(vAlertSimpleThread) onThread:[NSThread mainThread] withObject:nil waitUntilDone:NO];
+    }
 }
 -(void)vAlertSimpleThread{
     appController.vAlert = [[DoAlertView alloc] init];
@@ -42,8 +45,9 @@
     appController.vAlert.dRound = 7.0;
     appController.vAlert.bDestructive = NO;
     
-    
+    if([_dicAlertContent objectForKey:@"body"] != nil){
     [appController.vAlert doAlert:[_dicAlertContent objectForKey:@"title"] body:[_dicAlertContent objectForKey:@"body"] duration:[[_dicAlertContent objectForKey:@"duration"] floatValue] done:^(DoAlertView *alertView) {}];
+    }
 }
 
 
@@ -75,6 +79,17 @@
     
     return success;
 }
+
+- (NSDictionary*) removeNilValue:(NSDictionary*) dicValue{
+    NSMutableDictionary *res= [@{} mutableCopy];
+     for (NSString * key in [dicValue allKeys])
+    {
+        if (![[dicValue objectForKey:key] isKindOfClass:[NSNull class]])
+            [res setObject:[dicValue objectForKey:key] forKey:key];
+    }
+    return [res copy];
+}
+
 - (NSString *)getValueByIdFromArray:(NSMutableArray *)arr idKeyFormat:(NSString *)keyIdStr valKeyFormat:(NSString *)keyValStr idValue:(NSString *)idStr {
     NSString *val = @"";
     for(NSMutableDictionary *dic in arr) {
@@ -207,6 +222,7 @@
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     return [emailTest evaluateWithObject:emailStr];
 }
+
 - (NSArray *)getSortedArray:(NSArray *)array {
     NSArray *keys = [array sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
     return keys;
@@ -665,6 +681,25 @@
     
 }
 
+- (int) calculateDistance: (double) sourceLat withSourceLong: (double) sourceLon withDestinationLat: (double) destinationLat withDestinationLong: (double) destinationLong{
+    
+    double mile = 0.0;
+    
+    double seta = sourceLon - destinationLong;
+    double range = sin(sourceLat * M_PI / 180) * sin(destinationLat *  M_PI / 180) + cos(sourceLat * M_PI / 180) * cos(destinationLat * M_PI / 180) * cos(seta * M_PI / 180);
+    double angleDistance = acos(range);
+    mile = (int) 60 * 1.1515 * angleDistance * 180 / M_PI;
+    
+    return mile;
+}
+
+- (NSString*) ageCount:(NSString*) birthYear
+{
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:[NSDate date]];
+    int age = (int)[components year] - [birthYear intValue];
+    return [NSString stringWithFormat:@"%d", age];
+}
+
 #pragma mark - Common Httl Request Methods
 //
 //+ (id) httpCommonRequest:(NSString*) urlStr {
@@ -689,6 +724,30 @@
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     //[request setValue:@"application/json; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
    // [request setValue:API_KEY forHTTPHeaderField:@"api-key"];
+    [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    NSString *jsonResult = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
+    return [[SBJsonParser new] objectWithString:jsonResult];
+}
+
+- (id) myhttpJsonRequest:(NSString *) urlStr withJSON:(NSMutableDictionary *)params {
+    NSURL *url = [NSURL URLWithString:urlStr];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+    NSString *body = [[SBJsonWriter new] stringWithObject:params];
+    NSData *requestData = [body dataUsingEncoding:NSASCIIStringEncoding];
+    NSString *authorized_token = [commonUtils getUserDefault:@"authorized_token"];
+    
+    NSLog(@"authorized token : %@", authorized_token);
+    
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:[commonUtils getUserDefault:@"authorized_token"] forHTTPHeaderField:@"authorized_token"];
+    //[request setValue:@"application/json; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
+    // [request setValue:API_KEY forHTTPHeaderField:@"api-key"];
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[requestData length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody: requestData];
     
